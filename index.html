@@ -1,0 +1,1970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>NOETICA — The Private Science of Your Mind</title>
+<meta name="description" content="AI-powered private mental wellness. Encrypted on COTI Network."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+<style>
+/* ═══════════════════════════════════
+   NOETICA v2 — Design System
+   Black · Silver · Platinum White
+   ═══════════════════════════════════ */
+:root {
+  --void:    #020204;
+  --abyss:   #050507;
+  --deep:    #08080c;
+  --surface: #0f0f14;
+  --raised:  #141419;
+  --card:    #1a1a22;
+  --lift:    #202028;
+  --b0: rgba(255,255,255,0.04);
+  --b1: rgba(255,255,255,0.08);
+  --b2: rgba(255,255,255,0.13);
+  --b3: rgba(255,255,255,0.22);
+  --s0: #333340;
+  --s1: #555568;
+  --s2: #888899;
+  --s3: #aaaabc;
+  --s4: #ccccda;
+  --s5: #e8e8f0;
+  --white: #ffffff;
+  --teal:  #00e5cc;
+  --teal2: rgba(0,229,204,0.12);
+  --gold:  rgba(255,210,100,0.7);
+  --font-d: 'Cormorant Garamond', Georgia, serif;
+  --font-b: 'DM Sans', system-ui, sans-serif;
+  --font-m: 'DM Mono', monospace;
+  --r: 12px;
+  --rl: 18px;
+  --rxl: 24px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+body {
+  background: var(--void);
+  color: var(--white);
+  font-family: var(--font-b);
+  min-height: 100vh;
+  overflow: hidden;
+  user-select: none;
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+/* ═══════ NEURAL BACKGROUND ═══════ */
+#bg {
+  position: fixed; inset: 0; z-index: 0;
+  overflow: hidden; pointer-events: none;
+}
+
+/* Animated grid */
+#bg::before {
+  content: '';
+  position: absolute; inset: -50%;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: gridDrift 30s linear infinite;
+  transform-origin: center;
+}
+@keyframes gridDrift {
+  0%   { transform: perspective(600px) rotateX(20deg) translateY(0); }
+  100% { transform: perspective(600px) rotateX(20deg) translateY(60px); }
+}
+
+/* Radial glow orbs */
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(100px); pointer-events: none;
+  animation: orbFloat linear infinite;
+}
+.orb-1 {
+  width: 600px; height: 600px;
+  top: -200px; left: 50%; transform: translateX(-50%);
+  background: radial-gradient(circle, rgba(255,255,255,0.04), transparent 65%);
+  animation-duration: 20s;
+}
+.orb-2 {
+  width: 400px; height: 400px;
+  bottom: -100px; right: -100px;
+  background: radial-gradient(circle, rgba(0,229,204,0.07), transparent 65%);
+  animation-duration: 15s; animation-delay: -5s;
+}
+.orb-3 {
+  width: 350px; height: 350px;
+  top: 40%; left: -80px;
+  background: radial-gradient(circle, rgba(140,140,255,0.04), transparent 65%);
+  animation-duration: 25s; animation-delay: -10s;
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(30px, -20px) scale(1.04); }
+  66%       { transform: translate(-20px, 15px) scale(0.97); }
+}
+
+/* Neural canvas */
+#neural { position: absolute; inset: 0; opacity: 0.6; }
+
+/* Scan line */
+#bg::after {
+  content: '';
+  position: absolute; left: 0; right: 0;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent, rgba(0,229,204,0.03), transparent);
+  animation: scanLine 8s linear infinite;
+}
+@keyframes scanLine {
+  0%   { top: -200px; }
+  100% { top: 100vh; }
+}
+
+/* ═══════ SCREENS ═══════ */
+.screen {
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  z-index: 10;
+}
+.screen.hidden {
+  opacity: 0; transform: translateY(16px);
+  pointer-events: none;
+}
+
+/* ═══════ LANDING ═══════ */
+#s-land {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.logo-cluster {
+  position: relative;
+  width: 100px; height: 100px;
+  margin: 0 auto 36px;
+}
+.logo-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.logo-ring:nth-child(1) { animation: ringPulse 3s ease-in-out infinite; }
+.logo-ring:nth-child(2) { inset: 12px; border-color: rgba(255,255,255,0.07); animation: ringPulse 3s ease-in-out 1s infinite; }
+.logo-ring:nth-child(3) { inset: 24px; border-color: rgba(0,229,204,0.2); animation: ringPulse 3s ease-in-out 2s infinite; }
+.logo-core {
+  position: absolute; inset: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(0,229,204,0.08));
+  border: 1px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-d); font-size: 16px; color: rgba(255,255,255,0.8);
+  box-shadow: 0 0 40px rgba(0,229,204,0.1), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+@keyframes ringPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50%       { transform: scale(1.06); opacity: 1; }
+}
+
+.land-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 18px; border-radius: 40px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--s2); letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.live-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 8px var(--teal);
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .2; } }
+
+.land-h1 {
+  font-family: var(--font-d);
+  font-size: clamp(56px, 10vw, 110px);
+  font-weight: 300; letter-spacing: -.03em; line-height: .9;
+  color: var(--white); margin-bottom: 10px;
+  text-align: center;
+}
+.land-h1 em { font-style: italic; color: rgba(255,255,255,0.6); }
+
+.land-tagline {
+  font-family: var(--font-d);
+  font-size: clamp(13px, 2vw, 17px);
+  font-weight: 300; font-style: italic;
+  color: var(--s1); letter-spacing: .06em;
+  text-align: center; margin-bottom: 36px;
+}
+
+.land-desc {
+  font-size: 13px; color: var(--s1);
+  line-height: 1.85; text-align: center;
+  max-width: 420px; margin: 0 auto 44px;
+}
+
+.land-btns {
+  display: flex; gap: 10px; justify-content: center;
+  flex-wrap: wrap; margin-bottom: 52px;
+}
+
+.btn-white {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 34px; border-radius: 40px;
+  background: var(--white); color: var(--void);
+  font-family: var(--font-b); font-size: 13px; font-weight: 600;
+  border: none; cursor: pointer;
+  box-shadow: 0 4px 30px rgba(255,255,255,0.12);
+  transition: all .25s;
+}
+.btn-white:hover {
+  background: var(--s5);
+  box-shadow: 0 8px 40px rgba(255,255,255,0.22);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px; border-radius: 40px;
+  background: transparent; color: var(--s3);
+  font-family: var(--font-b); font-size: 13px; font-weight: 400;
+  border: 1px solid var(--b2); cursor: pointer;
+  transition: all .25s;
+}
+.btn-outline:hover { border-color: var(--b3); color: var(--white); background: var(--b0); }
+
+.trust-pills {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+}
+.trust-pill {
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--s0); letter-spacing: .1em;
+  padding: 5px 14px; border-radius: 20px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ═══════ ONBOARDING ═══════ */
+#s-onb {
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.onb-shell {
+  width: 100%; max-width: 420px;
+  background: var(--surface);
+  border: 1px solid var(--b1);
+  border-radius: var(--rxl);
+  overflow: hidden;
+  box-shadow: 0 2px 0 rgba(255,255,255,0.04) inset,
+              0 60px 120px rgba(0,0,0,0.7);
+}
+
+.onb-top {
+  padding: 32px 32px 0; text-align: center;
+}
+.onb-icon-wrap {
+  width: 56px; height: 56px; margin: 0 auto 20px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--b1), var(--b0));
+  border: 1px solid var(--b2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+}
+.onb-title {
+  font-family: var(--font-d); font-size: 26px;
+  font-weight: 400; color: var(--white); margin-bottom: 6px;
+}
+.onb-sub {
+  font-size: 13px; color: var(--s2);
+  line-height: 1.7; margin-bottom: 28px;
+}
+
+.onb-body { padding: 0 28px 28px; }
+
+.progress-dots {
+  display: flex; justify-content: center; gap: 6px; margin-bottom: 24px;
+}
+.pdot {
+  height: 5px; border-radius: 3px;
+  background: var(--raised); transition: all .3s;
+}
+.pdot.on  { width: 22px; background: var(--white); }
+.pdot.done{ width: 8px; background: var(--s0); }
+.pdot.off { width: 8px; }
+
+.fl { margin-bottom: 14px; }
+.fl-label {
+  font-family: var(--font-m); font-size: 10px;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--s1); margin-bottom: 6px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.fl-input {
+  width: 100%; padding: 12px 14px;
+  background: var(--raised);
+  border: 1px solid var(--b1); border-radius: var(--r);
+  color: var(--white); font-family: var(--font-b);
+  font-size: 14px; outline: none;
+  transition: all .2s;
+}
+.fl-input::placeholder { color: var(--s0); }
+.fl-input:focus {
+  border-color: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.04);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.04);
+}
+.fl-input.mono { font-family: var(--font-m); font-size: 12px; letter-spacing: .03em; }
+
+.key-box {
+  background: var(--raised);
+  border: 1px solid rgba(0,229,204,0.18);
+  border-radius: var(--r); padding: 14px;
+  margin-bottom: 12px;
+}
+.key-label {
+  font-family: var(--font-m); font-size: 10px;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.key-text {
+  font-family: var(--font-m); font-size: 11.5px;
+  color: var(--s4); word-break: break-all; line-height: 1.6;
+}
+
+.warn-note {
+  padding: 11px 13px;
+  background: rgba(255,200,50,0.04);
+  border: 1px solid rgba(255,200,50,0.1);
+  border-radius: var(--r); font-size: 12px;
+  color: rgba(255,200,100,0.65); line-height: 1.65;
+  margin-bottom: 18px;
+}
+
+.onb-row { display: flex; gap: 8px; }
+
+.btn-back {
+  padding: 12px 18px; border-radius: 40px;
+  background: transparent; border: 1px solid var(--b1);
+  color: var(--s2); font-family: var(--font-b);
+  font-size: 13px; cursor: pointer; transition: all .2s;
+}
+.btn-back:hover { border-color: var(--b2); color: var(--white); }
+
+.btn-next {
+  flex: 1; padding: 13px 20px; border-radius: 40px;
+  background: var(--white); border: none;
+  color: var(--void); font-family: var(--font-b);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all .2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn-next:hover { background: var(--s5); box-shadow: 0 4px 20px rgba(255,255,255,0.15); }
+.btn-next:disabled { opacity: .38; cursor: not-allowed; }
+
+.mode-row {
+  display: flex; gap: 3px; padding: 3px;
+  background: var(--raised); border-radius: 40px; margin-bottom: 22px;
+}
+.mode-tab {
+  flex: 1; padding: 8px; border-radius: 40px;
+  background: none; border: none; color: var(--s1);
+  font-family: var(--font-b); font-size: 12px;
+  font-weight: 500; cursor: pointer; transition: all .2s;
+}
+.mode-tab.on { background: var(--white); color: var(--void); }
+
+.copy-sm {
+  background: none; border: 1px solid var(--b1);
+  color: var(--s2); font-family: var(--font-m);
+  font-size: 10px; padding: 2px 8px; border-radius: 6px;
+  cursor: pointer; transition: all .2s;
+}
+.copy-sm:hover { color: var(--white); border-color: var(--b2); }
+
+/* ═══════ APP ═══════ */
+#s-app { background: var(--abyss); overflow: hidden; }
+
+/* Topbar */
+.tbar {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 50;
+  height: 58px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 18px;
+  background: rgba(5,5,7,0.88);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--b1);
+}
+.tbar-left { display: flex; align-items: center; gap: 10px; }
+.tbar-mark {
+  width: 32px; height: 32px; border-radius: 11px;
+  background: linear-gradient(135deg, var(--b2), var(--b0));
+  border: 1px solid var(--b2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-d); font-size: 15px; color: rgba(255,255,255,0.75);
+}
+.tbar-name {
+  font-family: var(--font-d); font-size: 18px;
+  font-weight: 400; color: var(--white); letter-spacing: .02em;
+}
+.tbar-right { display: flex; align-items: center; gap: 8px; }
+
+.net-pill {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 20px;
+  background: rgba(0,229,204,0.07);
+  border: 1px solid rgba(0,229,204,0.15);
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--teal); letter-spacing: .08em;
+}
+.net-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--teal); box-shadow: 0 0 6px var(--teal);
+  animation: blink 2s infinite;
+}
+
+.noet-chip {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 20px;
+  background: var(--b0); border: 1px solid var(--b1);
+  font-family: var(--font-m); font-size: 11px; color: var(--s3);
+}
+
+.wallet-sm {
+  padding: 6px 14px; border-radius: 20px;
+  background: transparent; border: 1px solid var(--b2);
+  color: var(--s3); font-family: var(--font-b);
+  font-size: 11px; font-weight: 500; cursor: pointer;
+  transition: all .2s;
+}
+.wallet-sm:hover { border-color: var(--b3); color: var(--white); }
+
+/* Bottom nav */
+.bbar {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 50;
+  padding: 10px 14px 22px;
+  background: linear-gradient(to top, var(--abyss) 0%, rgba(5,5,7,0.95) 60%, transparent 100%);
+}
+.bbar-inner {
+  max-width: 360px; margin: 0 auto;
+  display: flex; align-items: center;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--b1);
+  border-radius: 22px; padding: 5px;
+  backdrop-filter: blur(20px);
+}
+.nb {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  padding: 9px 4px; border-radius: 15px;
+  background: none; border: none; cursor: pointer;
+  color: var(--s0); font-family: var(--font-b);
+  font-size: 10px; font-weight: 500;
+  letter-spacing: .02em; transition: all .25s;
+  position: relative;
+}
+.nb svg { width: 18px; height: 18px; transition: all .25s; }
+.nb.on { color: var(--white); background: rgba(255,255,255,0.07); }
+.nb.on svg { filter: drop-shadow(0 0 5px rgba(255,255,255,0.4)); }
+.nb.on::after {
+  content: ''; position: absolute; bottom: 4px; left: 50%;
+  transform: translateX(-50%);
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--white); box-shadow: 0 0 5px rgba(255,255,255,0.6);
+}
+
+/* Tab panels */
+.tab { display: none; position: absolute; inset: 0; overflow: hidden; }
+.tab.on { display: flex; flex-direction: column; }
+
+/* ═══════ CHAT ═══════ */
+#t-chat { padding-top: 58px; padding-bottom: 88px; }
+
+.chat-ai-row {
+  padding: 14px 16px;
+  max-width: 640px; width: 100%; margin: 0 auto;
+}
+.chat-ai-card {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 15px;
+  background: var(--surface); border: 1px solid var(--b1);
+  border-radius: var(--rl);
+  animation: fadeUp .4s ease forwards;
+}
+.ai-left { display: flex; align-items: center; gap: 12px; }
+.ai-av {
+  width: 42px; height: 42px; border-radius: 15px;
+  background: linear-gradient(135deg, var(--b2), var(--b0));
+  border: 1px solid var(--b2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-d); font-size: 18px;
+  color: rgba(255,255,255,0.7);
+  position: relative;
+}
+.ai-live {
+  position: absolute; bottom: -2px; right: -2px;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--teal); border: 2px solid var(--surface);
+  box-shadow: 0 0 6px var(--teal); animation: blink 2s infinite;
+}
+.ai-name { font-size: 14px; font-weight: 500; color: var(--white); }
+.ai-info { font-size: 10px; color: var(--teal); font-family: var(--font-m); margin-top: 2px; }
+
+.enc-badge {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 20px;
+  background: rgba(0,229,204,0.06);
+  border: 1px solid rgba(0,229,204,0.14);
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--teal); letter-spacing: .05em;
+}
+
+/* Messages area */
+.msgs {
+  flex: 1; overflow-y: auto;
+  padding: 6px 16px 10px;
+  display: flex; flex-direction: column; gap: 14px;
+  max-width: 640px; width: 100%; margin: 0 auto;
+}
+.msgs::-webkit-scrollbar { width: 2px; }
+
+.mrow { display: flex; gap: 10px; align-items: flex-end; }
+.mrow.u { flex-direction: row-reverse; }
+
+.mav {
+  width: 28px; height: 28px; flex-shrink: 0;
+  border-radius: 10px; display: flex;
+  align-items: center; justify-content: center; font-size: 13px;
+}
+.mav.ai-m {
+  background: linear-gradient(135deg, var(--b2), var(--b0));
+  border: 1px solid var(--b2);
+  font-family: var(--font-d); color: rgba(255,255,255,0.6);
+}
+.mav.u-m {
+  background: var(--white); color: var(--void);
+  font-family: var(--font-d); font-weight: 700;
+}
+
+.mbubble {
+  max-width: 78%; padding: 12px 16px; font-size: 14px;
+  line-height: 1.7; border-radius: 18px;
+}
+.mbubble.ai {
+  background: var(--raised); border: 1px solid var(--b1);
+  color: var(--s3); border-bottom-left-radius: 4px;
+  white-space: pre-wrap;
+}
+.mbubble.u {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.11);
+  color: var(--s4); border-bottom-right-radius: 4px;
+}
+
+.mmeta {
+  font-size: 10px; color: var(--s0);
+  display: flex; align-items: center; gap: 5px; margin-top: 4px;
+}
+.enc-tag { color: rgba(0,229,204,0.4); font-family: var(--font-m); }
+
+/* Typing */
+.typing-row { display: flex; gap: 10px; align-items: flex-end; }
+.typing-bub {
+  padding: 14px 16px;
+  background: var(--raised); border: 1px solid var(--b1);
+  border-radius: 18px; border-bottom-left-radius: 4px;
+  display: flex; align-items: center; gap: 5px;
+}
+.td { width: 6px; height: 6px; border-radius: 50%; background: var(--s1); animation: tdBounce 1.4s ease-in-out infinite; }
+.td:nth-child(2) { animation-delay: .2s; }
+.td:nth-child(3) { animation-delay: .4s; }
+@keyframes tdBounce { 0%,60%,100%{transform:translateY(0);opacity:.3} 30%{transform:translateY(-7px);opacity:1} }
+
+/* Prompts */
+.qprompts {
+  padding: 0 16px 8px;
+  display: flex; gap: 6px; overflow-x: auto;
+  max-width: 640px; width: 100%; margin: 0 auto;
+  scrollbar-width: none;
+}
+.qprompts::-webkit-scrollbar { display: none; }
+.qp {
+  flex-shrink: 0; padding: 8px 14px; border-radius: 20px;
+  background: var(--raised); border: 1px solid var(--b1);
+  color: var(--s2); font-size: 12px; font-family: var(--font-b);
+  cursor: pointer; white-space: nowrap; transition: all .2s;
+}
+.qp:hover { border-color: var(--b2); color: var(--white); }
+
+/* Chat input */
+.cinput-wrap {
+  padding: 8px 16px; max-width: 640px; width: 100%; margin: 0 auto;
+}
+.cinput-box {
+  display: flex; align-items: flex-end; gap: 10px;
+  background: var(--surface); border: 1px solid var(--b2);
+  border-radius: 20px; padding: 10px 10px 10px 16px;
+  transition: all .2s;
+}
+.cinput-box:focus-within {
+  border-color: var(--b3);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.04);
+}
+.cinput-ta {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--white); font-family: var(--font-b);
+  font-size: 14px; line-height: 1.5; resize: none;
+  min-height: 24px; max-height: 120px;
+}
+.cinput-ta::placeholder { color: var(--s0); }
+.send-btn {
+  width: 36px; height: 36px; border-radius: 12px;
+  background: var(--white); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all .2s;
+}
+.send-btn:hover { background: var(--s5); box-shadow: 0 4px 16px rgba(255,255,255,0.2); }
+.send-btn:disabled { opacity: .3; cursor: not-allowed; }
+.send-btn svg { width: 15px; height: 15px; color: var(--void); }
+
+.cinput-foot {
+  text-align: center; font-family: var(--font-m);
+  font-size: 9px; color: var(--s0);
+  letter-spacing: .1em; margin-top: 6px;
+}
+
+/* ═══════ MOOD ═══════ */
+#t-mood { padding-top: 58px; padding-bottom: 88px; overflow-y: auto; }
+.tscroll { padding: 16px; max-width: 640px; width: 100%; margin: 0 auto; }
+
+.sec-h1 { font-family: var(--font-d); font-size: 26px; font-weight: 400; color: var(--white); margin-bottom: 3px; }
+.sec-h2 { font-size: 11px; color: var(--s0); font-family: var(--font-m); margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+.sec-h2 .etag { color: var(--teal); }
+
+.g-card {
+  background: var(--surface); border: 1px solid var(--b1);
+  border-radius: var(--rl); transition: border-color .2s;
+  overflow: hidden;
+}
+
+.stats-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
+.scard { padding: 14px; background: var(--raised); border: 1px solid var(--b1); border-radius: var(--r); text-align: center; }
+.sval { font-family: var(--font-d); font-size: 26px; font-weight: 400; color: var(--white); line-height: 1; margin-bottom: 3px; }
+.slbl { font-size: 10px; color: var(--s0); font-family: var(--font-m); letter-spacing: .06em; }
+
+/* Mood chart */
+.chart-area { height: 80px; display: flex; align-items: flex-end; gap: 3px; padding: 0 2px; }
+.cbar {
+  flex: 1; border-radius: 3px 3px 0 0;
+  background: var(--raised); transition: all .5s ease;
+  cursor: pointer; position: relative;
+}
+.cbar:hover::after {
+  content: attr(data-v); position: absolute; top: -18px; left: 50%;
+  transform: translateX(-50%); font-size: 9px; color: var(--s3);
+  font-family: var(--font-m); white-space: nowrap;
+}
+.cbar.f { background: linear-gradient(to top, rgba(0,229,204,.25), rgba(0,229,204,.05)); }
+
+.mood-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 7px; margin-bottom: 14px; }
+.mi {
+  aspect-ratio: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
+  border-radius: var(--r); background: var(--raised);
+  border: 1px solid var(--b1); cursor: pointer;
+  transition: all .2s; font-size: 22px;
+}
+.mi span { font-size: 10px; color: var(--s0); }
+.mi:hover { transform: translateY(-3px); border-color: var(--b2); }
+.mi.sel {
+  transform: translateY(-3px);
+  border-color: rgba(255,255,255,0.22);
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.etags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.etag-btn {
+  padding: 5px 12px; border-radius: 20px;
+  background: var(--raised); border: 1px solid var(--b1);
+  color: var(--s1); font-size: 11px; cursor: pointer;
+  transition: all .15s; font-family: var(--font-b);
+}
+.etag-btn:hover { border-color: var(--b2); color: var(--white); }
+.etag-btn.on { background: var(--b1); border-color: var(--b2); color: var(--white); }
+
+/* ═══════ JOURNAL ═══════ */
+#t-journal { padding-top: 58px; padding-bottom: 88px; overflow-y: auto; }
+
+.streak-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, var(--b0), rgba(0,0,0,0.1));
+  border: 1px solid var(--b1); border-radius: var(--rl);
+  margin-bottom: 14px;
+}
+.streak-l { display: flex; align-items: center; gap: 12px; }
+.flame { font-size: 32px; animation: flicker .7s ease-in-out infinite alternate; }
+@keyframes flicker { from{transform:scale(1)rotate(-1deg)} to{transform:scale(1.07)rotate(1deg)} }
+.s-num { font-family: var(--font-d); font-size: 32px; font-weight: 300; color: var(--white); line-height: 1; }
+.s-lbl { font-size: 11px; color: var(--s0); margin-top: 2px; }
+.s-right { text-align: right; }
+.s-reward {
+  font-family: var(--font-m); font-size: 11px;
+  color: rgba(255,210,100,.7); padding: 4px 10px;
+  border-radius: 12px; background: rgba(255,210,50,.05);
+  border: 1px solid rgba(255,210,50,.1);
+}
+
+.prompt-box {
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--b1);
+  border-left: 2px solid var(--s1);
+  border-radius: 0 var(--r) var(--r) 0;
+  cursor: pointer; transition: all .2s; margin-bottom: 14px;
+}
+.prompt-box:hover { border-left-color: var(--white); }
+.prompt-lbl { font-family: var(--font-m); font-size: 9px; letter-spacing: .13em; text-transform: uppercase; color: var(--s0); margin-bottom: 6px; }
+.prompt-text { font-family: var(--font-d); font-size: 15px; font-style: italic; color: var(--s3); line-height: 1.5; }
+
+.jta {
+  width: 100%; min-height: 170px;
+  background: var(--raised); border: 1px solid var(--b1);
+  border-radius: var(--r); padding: 15px; color: var(--white);
+  font-family: var(--font-b); font-size: 14px; line-height: 1.8;
+  outline: none; resize: none; transition: all .2s; margin-bottom: 8px;
+  user-select: text;
+}
+.jta::placeholder { color: var(--s0); }
+.jta:focus { border-color: var(--b2); box-shadow: 0 0 0 3px rgba(255,255,255,0.03); }
+
+.wc-row {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--font-m); font-size: 10px; color: var(--s0);
+  margin-bottom: 12px;
+}
+.enc-live2 { display: flex; align-items: center; gap: 5px; color: rgba(0,229,204,.4); }
+.enc-dot2 { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); opacity: .4; animation: blink 1.5s infinite; }
+
+.past-entry {
+  padding: 15px 16px; cursor: pointer;
+  transition: background .2s; user-select: none;
+}
+.past-entry:hover { background: rgba(255,255,255,0.02); }
+.past-entry + .past-entry { border-top: 1px solid var(--b1); }
+.pe-date { font-family: var(--font-m); font-size: 10px; color: var(--s0); letter-spacing: .06em; margin-bottom: 5px; }
+.pe-prev { font-size: 13px; color: var(--s2); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.pe-chips { display: flex; gap: 6px; margin-top: 6px; }
+.pe-chip { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: var(--b0); border: 1px solid var(--b1); color: var(--s0); }
+.pe-chip.teal { color: rgba(0,229,204,.5); border-color: rgba(0,229,204,.12); }
+
+/* ═══════ REWARDS ═══════ */
+#t-rewards { padding-top: 58px; padding-bottom: 88px; overflow-y: auto; }
+
+.bal-hero {
+  padding: 30px 22px; text-align: center;
+  background: var(--raised); border: 1px solid var(--b1);
+  border-radius: var(--rxl); margin-bottom: 14px;
+  position: relative; overflow: hidden;
+}
+.bal-hero::before {
+  content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+  width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.03), transparent 70%);
+  pointer-events: none;
+}
+.bal-lbl { font-family: var(--font-m); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--s0); margin-bottom: 10px; }
+.bal-num { font-family: var(--font-d); font-size: 54px; font-weight: 300; color: var(--white); line-height: 1; margin-bottom: 5px; }
+.bal-sym { font-family: var(--font-m); font-size: 13px; color: var(--s1); letter-spacing: .1em; margin-bottom: 20px; }
+.bal-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.bsm {
+  padding: 9px 20px; border-radius: 20px;
+  font-family: var(--font-b); font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all .2s;
+}
+.bsm-w { background: var(--white); color: var(--void); border: none; }
+.bsm-w:hover { background: var(--s5); }
+.bsm-g { background: none; border: 1px solid var(--b2); color: var(--s3); }
+.bsm-g:hover { border-color: var(--b3); color: var(--white); }
+
+.earn-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 16px; border-bottom: 1px solid var(--b1);
+}
+.earn-item:last-child { border-bottom: none; }
+.earn-l { display: flex; align-items: center; gap: 10px; }
+.earn-ico {
+  width: 34px; height: 34px; border-radius: 11px;
+  background: var(--raised); border: 1px solid var(--b1);
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+}
+.earn-n { font-size: 13px; color: var(--s3); }
+.earn-d { font-size: 11px; color: var(--s0); margin-top: 1px; }
+.earn-amt {
+  font-family: var(--font-m); font-size: 12px;
+  color: rgba(180,220,150,.8);
+  padding: 4px 10px; border-radius: 12px;
+  background: rgba(180,220,150,.05);
+  border: 1px solid rgba(180,220,150,.12);
+}
+
+.mile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mcard {
+  padding: 13px; border-radius: var(--r);
+  background: var(--raised); border: 1px solid var(--b1);
+  transition: all .2s;
+}
+.mcard.done { border-color: rgba(0,229,204,.2); background: rgba(0,229,204,.03); }
+.mcard:hover { border-color: var(--b2); }
+.mico { font-size: 20px; margin-bottom: 5px; }
+.mn { font-size: 12px; color: var(--s3); font-weight: 500; margin-bottom: 2px; }
+.md { font-size: 10px; color: var(--s0); }
+.mt { font-family: var(--font-m); font-size: 11px; color: rgba(180,220,150,.6); margin-top: 5px; }
+.mck { font-size: 10px; color: var(--teal); font-family: var(--font-m); margin-top: 3px; }
+
+.tx-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--b1);
+}
+.tx-item:last-child { border-bottom: none; }
+.tx-l { display: flex; align-items: center; gap: 10px; }
+.tx-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(0,229,204,.5); box-shadow: 0 0 6px rgba(0,229,204,.3); }
+.tx-n { font-size: 12px; color: var(--s3); }
+.tx-h { font-size: 10px; color: var(--s0); font-family: var(--font-m); }
+.tx-a { font-family: var(--font-m); font-size: 12px; color: rgba(180,220,150,.8); }
+
+/* ═══════ ENC FLASH ═══════ */
+#enc-flash {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; opacity: 0; transition: opacity .3s;
+}
+#enc-flash.on { opacity: 1; }
+.ef-card {
+  padding: 18px 26px; text-align: center;
+  background: rgba(5,5,7,0.96);
+  border: 1px solid rgba(0,229,204,0.25);
+  border-radius: var(--rl); backdrop-filter: blur(24px);
+  box-shadow: 0 0 60px rgba(0,229,204,0.08);
+}
+.ef-label {
+  font-family: var(--font-m); font-size: 10px;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px; justify-content: center;
+}
+.ef-text { font-family: var(--font-m); font-size: 11px; color: rgba(0,229,204,.4); }
+.ef-bar { height: 1px; background: rgba(255,255,255,.05); border-radius: 1px; margin-top: 10px; overflow: hidden; }
+.ef-fill { height: 100%; background: linear-gradient(90deg, var(--teal), rgba(0,229,204,.3)); width: 0; transition: width .7s ease; }
+
+/* ═══════ TOAST ═══════ */
+#toasts {
+  position: fixed; top: 68px; left: 50%; transform: translateX(-50%);
+  z-index: 9000; width: calc(100% - 32px); max-width: 380px;
+  display: flex; flex-direction: column; gap: 6px; pointer-events: none;
+}
+.tst {
+  padding: 11px 15px; border-radius: var(--r);
+  background: rgba(12,12,16,.97);
+  border: 1px solid rgba(255,255,255,.1);
+  font-size: 13px; color: var(--s3);
+  display: flex; align-items: center; gap: 9px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 30px rgba(0,0,0,.5);
+  animation: tstIn .3s ease, tstOut .3s ease 2.7s forwards;
+}
+.tst.ok { border-color: rgba(0,229,204,.2); }
+.tst.err { border-color: rgba(200,60,60,.2); }
+@keyframes tstIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:none} }
+@keyframes tstOut { to{opacity:0;transform:translateY(-10px)} }
+
+/* ═══════ OVERLAY ═══════ */
+.ov {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(2,2,4,.93); backdrop-filter: blur(12px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.ov.open { display: flex; }
+.ov-card {
+  width: 100%; max-width: 400px;
+  background: var(--surface); border: 1px solid var(--b2);
+  border-radius: var(--rxl); padding: 26px;
+  box-shadow: 0 60px 120px rgba(0,0,0,.7);
+  position: relative;
+}
+.ov-title { font-family: var(--font-d); font-size: 22px; font-weight: 400; color: var(--white); margin-bottom: 8px; }
+.ov-sub { font-size: 13px; color: var(--s2); line-height: 1.65; margin-bottom: 20px; }
+.ov-close { position: absolute; top: 18px; right: 18px; background: none; border: none; color: var(--s1); font-size: 20px; cursor: pointer; line-height: 1; }
+
+/* ═══════ UTILS ═══════ */
+@keyframes fadeUp { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+.fup { opacity: 0; animation: fadeUp .45s ease forwards; }
+.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.15s}.d4{animation-delay:.2s}.d5{animation-delay:.25s}
+
+.divider { height: 1px; background: var(--b1); margin: 16px 0; }
+.slabel { font-family: var(--font-m); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--s0); margin-bottom: 10px; }
+.mb14 { margin-bottom: 14px; }
+
+@media(max-width:480px) {
+  .land-h1 { font-size: 46px; }
+  .bal-num { font-size: 44px; }
+  .tbar-name { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Neural background -->
+<div id="bg">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <canvas id="neural"></canvas>
+</div>
+
+<!-- Encrypt flash -->
+<div id="enc-flash">
+  <div class="ef-card">
+    <div class="ef-label">⬡ Encrypting</div>
+    <div class="ef-text" id="ef-text">██████████████████</div>
+    <div class="ef-bar"><div class="ef-fill" id="ef-fill"></div></div>
+  </div>
+</div>
+
+<!-- Toasts -->
+<div id="toasts"></div>
+
+<!-- ════════════════ LANDING ════════════════ -->
+<div class="screen" id="s-land">
+  <div style="position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:24px;text-align:center">
+
+    <div class="logo-cluster fup d1">
+      <div class="logo-ring"></div>
+      <div class="logo-ring"></div>
+      <div class="logo-ring"></div>
+      <div class="logo-core">𝜓</div>
+    </div>
+
+    <div class="land-badge fup d2"><span class="live-dot"></span>COTI Network · Privacy-First AI</div>
+
+    <h1 class="land-h1 fup d2"><em>NOETICA</em></h1>
+    <p class="land-tagline fup d3">The Private Science of Your Mind</p>
+
+    <p class="land-desc fup d4">
+      The first AI mental companion that remembers everything about you —
+      without ever exposing your data. Encrypted with AES-256-GCM.
+      Rewarded on COTI Network.
+    </p>
+
+    <div class="land-btns fup d5">
+      <button class="btn-white" onclick="goto('s-onb')">
+        Open My Sanctuary
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <button class="btn-outline" onclick="showOv('ov-return')">Return to Vault</button>
+    </div>
+
+    <div class="trust-pills fup d5">
+      <span class="trust-pill">AES-256-GCM</span>
+      <span class="trust-pill">COTI Testnet</span>
+      <span class="trust-pill">Zero-Knowledge</span>
+      <span class="trust-pill">On-chain Rewards</span>
+    </div>
+  </div>
+
+  <!-- Scroll arrow -->
+  <div onclick="goto('s-onb')" style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--s0);font-family:var(--font-m);font-size:10px;letter-spacing:.12em;text-transform:uppercase;animation:orbFloat 3s ease-in-out infinite;z-index:5">
+    <div style="width:1px;height:36px;background:linear-gradient(to bottom,transparent,var(--s0),transparent);animation:scanLine 2s linear infinite"></div>
+    Enter
+  </div>
+</div>
+
+<!-- ════════════════ ONBOARDING ════════════════ -->
+<div class="screen hidden" id="s-onb">
+  <button onclick="goto('s-land')" style="position:absolute;top:18px;left:18px;z-index:10;background:none;border:1px solid var(--b1);border-radius:20px;color:var(--s2);font-family:var(--font-b);font-size:12px;padding:7px 16px;cursor:pointer;transition:all .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color=''">← Back</button>
+
+  <div style="position:relative;z-index:5;display:flex;align-items:center;justify-content:center;flex:1;padding:20px">
+  <div class="onb-shell">
+
+    <!-- Step 1 -->
+    <div id="st1">
+      <div class="onb-top">
+        <div class="onb-icon-wrap">𝜓</div>
+        <div class="onb-title">Create Your Vault</div>
+        <div class="onb-sub">Your private sanctuary. No email. No account. Just you and complete privacy.</div>
+      </div>
+      <div class="onb-body">
+        <div class="progress-dots">
+          <div class="pdot on"></div><div class="pdot off"></div><div class="pdot off"></div>
+        </div>
+        <div class="mode-row">
+          <button class="mode-tab on" id="mt-new" onclick="setMode('new')">New Vault</button>
+          <button class="mode-tab" id="mt-ret" onclick="setMode('ret')">Return</button>
+        </div>
+
+        <!-- New vault form -->
+        <div id="form-new">
+          <div class="fl">
+            <div class="fl-label">Your name</div>
+            <input class="fl-input" id="inp-name" type="text" placeholder="What should I call you?" autocomplete="off" oninput="checkStep1()"/>
+          </div>
+          <div class="fl">
+            <div class="fl-label">
+              <span>API Key <span style="color:var(--s0)">(Nous Portal)</span></span>
+              <a href="https://portal.nousresearch.com/api-keys" target="_blank" style="color:var(--teal);font-size:10px;text-decoration:none">Get key →</a>
+            </div>
+            <input class="fl-input mono" id="inp-api" type="password" placeholder="Your Nous Research API key..."/>
+          </div>
+          <div style="font-size:11px;color:var(--s0);line-height:1.65;margin-bottom:18px">Key stored encrypted in your local vault only. Never sent to any server except Nous Research.</div>
+        </div>
+
+        <!-- Return vault form -->
+        <div id="form-ret" style="display:none">
+          <div class="fl">
+            <div class="fl-label">Vault Key</div>
+            <input class="fl-input mono" id="inp-retkey" type="password" placeholder="Your 32-char vault key..." oninput="checkStep1()"/>
+          </div>
+        </div>
+
+        <div class="onb-row">
+          <button class="btn-next" id="btn-st1" onclick="toStep2()" disabled>
+            Continue
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Vault Key -->
+    <div id="st2" style="display:none">
+      <div class="onb-top">
+        <div class="onb-icon-wrap">🗝</div>
+        <div class="onb-title">Your Vault Key</div>
+        <div class="onb-sub">This encrypts everything. Only you hold this key — we never see it.</div>
+      </div>
+      <div class="onb-body">
+        <div class="progress-dots">
+          <div class="pdot done"></div><div class="pdot on"></div><div class="pdot off"></div>
+        </div>
+        <div class="key-box">
+          <div class="key-label">
+            <span>⬡ Encryption key</span>
+            <button class="copy-sm" onclick="copyKey()">Copy</button>
+          </div>
+          <div class="key-text" id="key-display">—</div>
+        </div>
+        <div class="warn-note">⚠ Save this key somewhere safe. Lost key = lost data. Even we cannot recover it.</div>
+        <div class="onb-row">
+          <button class="btn-back" onclick="backTo1()">← Back</button>
+          <button class="btn-next" onclick="toStep3()">I've saved it ✓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Ready -->
+    <div id="st3" style="display:none">
+      <div class="onb-top">
+        <div class="onb-icon-wrap">💜</div>
+        <div class="onb-title" id="st3-name">Welcome</div>
+        <div class="onb-sub">Your sanctuary is ready. Everything is encrypted before it leaves this device.</div>
+      </div>
+      <div class="onb-body">
+        <div class="progress-dots">
+          <div class="pdot done"></div><div class="pdot done"></div><div class="pdot on"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--raised);border:1px solid var(--b1);border-radius:var(--r)">
+            <span>🔐</span><span style="font-size:12px;color:var(--s2)">AES-256-GCM encryption active</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--raised);border:1px solid var(--b1);border-radius:var(--r)">
+            <span>🤖</span><span style="font-size:12px;color:var(--s2)" id="ai-status-txt">Neural intelligence ready</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--raised);border:1px solid var(--b1);border-radius:var(--r)">
+            <span>⛓</span><span style="font-size:12px;color:var(--s2)">COTI Testnet · Chain ID 7082400</span>
+          </div>
+        </div>
+        <button class="btn-next" onclick="enterApp()">
+          Enter NOETICA
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ════════════════ APP ════════════════ -->
+<div class="screen hidden" id="s-app">
+
+  <!-- Topbar -->
+  <div class="tbar">
+    <div class="tbar-left">
+      <div class="tbar-mark">𝜓</div>
+      <span class="tbar-name">NOETICA</span>
+    </div>
+    <div class="tbar-right">
+      <div class="net-pill"><div class="net-dot"></div>COTI</div>
+      <div class="noet-chip">◈ <span id="top-bal">0</span> <span style="color:var(--s0)">NOET</span></div>
+      <button class="wallet-sm" id="wlt-btn" onclick="connectWallet()">Connect</button>
+    </div>
+  </div>
+
+  <!-- ─── CHAT TAB ─── -->
+  <div class="tab on" id="t-chat">
+    <div class="chat-ai-row">
+      <div class="chat-ai-card">
+        <div class="ai-left">
+          <div class="ai-av">𝜓<div class="ai-live"></div></div>
+          <div>
+            <div class="ai-name">NOETICA Intelligence</div>
+            <div class="ai-info">Neural Core · Privacy Encrypted</div>
+          </div>
+        </div>
+        <div class="enc-badge">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          E2E ENCRYPTED
+        </div>
+      </div>
+    </div>
+    <div class="msgs" id="msgs"></div>
+    <div class="qprompts" id="qprompts">
+      <button class="qp" onclick="sendQ(this)">I feel anxious today</button>
+      <button class="qp" onclick="sendQ(this)">Help me process my thoughts</button>
+      <button class="qp" onclick="sendQ(this)">I need to vent about something</button>
+      <button class="qp" onclick="sendQ(this)">I feel overwhelmed</button>
+      <button class="qp" onclick="sendQ(this)">I had a hard day</button>
+    </div>
+    <div class="cinput-wrap">
+      <div class="cinput-box">
+        <textarea class="cinput-ta" id="cinput" placeholder="Share what's on your mind..." rows="1"
+          onkeydown="ckd(event)" oninput="crez(this)"></textarea>
+        <button class="send-btn" id="sbtn" onclick="sendMsg()" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+        </button>
+      </div>
+      <div class="cinput-foot">AES-256-GCM · NOETICA does not store your data · COTI Network</div>
+    </div>
+  </div>
+
+  <!-- ─── MOOD TAB ─── -->
+  <div class="tab" id="t-mood">
+    <div class="tscroll">
+      <div class="sec-h1 fup">Mood</div>
+      <div class="sec-h2 fup d1"><span class="etag">⬡</span> Encrypted · Private analytics</div>
+
+      <div class="stats-3 fup d1">
+        <div class="scard"><div class="sval" id="m-avg">—</div><div class="slbl">avg score</div></div>
+        <div class="scard"><div class="sval" id="m-cnt">0</div><div class="slbl">total logs</div></div>
+        <div class="scard"><div class="sval" id="m-trend">—</div><div class="slbl">trend</div></div>
+      </div>
+
+      <div class="g-card fup d2 mb14" style="padding:16px">
+        <div class="slabel">14-day journey</div>
+        <div class="chart-area" id="mood-chart"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--s0);font-family:var(--font-m)">
+          <span id="c-start">—</span><span>Today</span>
+        </div>
+      </div>
+
+      <div class="g-card fup d3 mb14" style="padding:16px" id="checkin-card">
+        <div class="slabel">How are you right now?</div>
+        <div class="mood-grid">
+          <div class="mi" data-score="10" data-label="Radiant" onclick="selMood(this)">😄<span>Radiant</span></div>
+          <div class="mi" data-score="7.5" data-label="Good" onclick="selMood(this)">🙂<span>Good</span></div>
+          <div class="mi" data-score="5" data-label="Neutral" onclick="selMood(this)">😐<span>Neutral</span></div>
+          <div class="mi" data-score="2.5" data-label="Low" onclick="selMood(this)">😔<span>Low</span></div>
+          <div class="mi" data-score="1" data-label="Rough" onclick="selMood(this)">😩<span>Rough</span></div>
+        </div>
+        <div class="slabel" style="margin-top:12px">Emotions present (optional)</div>
+        <div class="etags">
+          <div class="etag-btn" onclick="togTag(this)">Calm</div>
+          <div class="etag-btn" onclick="togTag(this)">Anxious</div>
+          <div class="etag-btn" onclick="togTag(this)">Grateful</div>
+          <div class="etag-btn" onclick="togTag(this)">Tired</div>
+          <div class="etag-btn" onclick="togTag(this)">Hopeful</div>
+          <div class="etag-btn" onclick="togTag(this)">Frustrated</div>
+          <div class="etag-btn" onclick="togTag(this)">Lonely</div>
+          <div class="etag-btn" onclick="togTag(this)">Content</div>
+          <div class="etag-btn" onclick="togTag(this)">Energized</div>
+          <div class="etag-btn" onclick="togTag(this)">Overwhelmed</div>
+        </div>
+        <button class="btn-next" id="log-mood-btn" onclick="logMood()" disabled style="margin-top:6px;font-size:13px;padding:12px">
+          Log Mood · Earn 5 NOET ◈
+        </button>
+      </div>
+
+      <div class="g-card fup d4" id="mood-hist" style="display:none">
+        <div class="slabel" style="padding:14px 16px 0">Recent logs</div>
+        <div id="mood-hist-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── JOURNAL TAB ─── -->
+  <div class="tab" id="t-journal">
+    <div class="tscroll">
+      <div class="sec-h1 fup">Journal</div>
+      <div class="sec-h2 fup d1"><span class="etag">⬡</span> Zero-knowledge · Your words only</div>
+
+      <div class="streak-row fup d1">
+        <div class="streak-l">
+          <div class="flame">🔥</div>
+          <div><div class="s-num" id="streak-n">0</div><div class="s-lbl">day streak</div></div>
+        </div>
+        <div class="s-right">
+          <div class="s-reward" id="s-reward">+10 NOET/entry</div>
+          <div style="font-size:10px;color:var(--s0);margin-top:4px;font-family:var(--font-m)" id="best-s">best: 0 days</div>
+        </div>
+      </div>
+
+      <div class="prompt-box fup d2" onclick="newPrompt()">
+        <div class="prompt-lbl">✦ Reflection prompt · tap to refresh</div>
+        <div class="prompt-text" id="prompt-txt">Loading your prompt...</div>
+      </div>
+
+      <div class="g-card fup d3 mb14" style="padding:16px" id="write-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="slabel" style="margin:0">Today's entry</div>
+          <div class="enc-live2" id="enc-live" style="display:none">
+            <div class="enc-dot2"></div>
+            <span style="font-family:var(--font-m);font-size:10px">encrypting</span>
+          </div>
+        </div>
+        <textarea class="jta" id="jta" placeholder="Write freely. This space is truly yours. Everything is encrypted as you type." oninput="jtype(this)"></textarea>
+        <div class="wc-row">
+          <span id="wc-lbl">0 words</span>
+          <div id="enc-inline" style="display:none" class="enc-live2">
+            <div class="enc-dot2"></div><span style="font-family:var(--font-m);font-size:10px">⬡ live encryption</span>
+          </div>
+        </div>
+        <button class="btn-next" id="save-btn" onclick="saveEntry()" style="font-size:13px;padding:12px" disabled>
+          Save & Encrypt · Earn NOET ◈
+        </button>
+      </div>
+
+      <div class="g-card fup d4" id="past-wrap" style="display:none">
+        <div class="slabel" style="padding:14px 16px 6px">Past entries</div>
+        <div id="past-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── REWARDS TAB ─── -->
+  <div class="tab" id="t-rewards">
+    <div class="tscroll">
+      <div class="sec-h1 fup">Rewards</div>
+      <div class="sec-h2 fup d1">Earn NOET tokens for taking care of your mind</div>
+
+      <div class="bal-hero fup d1">
+        <div class="bal-lbl">NOET Balance · COTI Testnet</div>
+        <div class="bal-num" id="big-bal">0</div>
+        <div class="bal-sym">NOETICA TOKEN</div>
+        <div class="bal-btns">
+          <button class="bsm bsm-w" onclick="connectWallet()">Connect Wallet</button>
+          <a href="https://faucet.coti.io" target="_blank" class="bsm bsm-g" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px">
+            Testnet COTI 🚰
+          </a>
+        </div>
+      </div>
+
+      <div class="g-card fup d2 mb14">
+        <div class="slabel" style="padding:14px 16px 6px">How to earn NOET</div>
+        <div class="earn-item"><div class="earn-l"><div class="earn-ico">✍</div><div><div class="earn-n">Journal Entry</div><div class="earn-d">Write at least 10 words</div></div></div><div class="earn-amt">+10 NOET</div></div>
+        <div class="earn-item"><div class="earn-l"><div class="earn-ico">📊</div><div><div class="earn-n">Mood Check-in</div><div class="earn-d">Log your daily mood</div></div></div><div class="earn-amt">+5 NOET</div></div>
+        <div class="earn-item"><div class="earn-l"><div class="earn-ico">🔥</div><div><div class="earn-n">3-Day Streak</div><div class="earn-d">Journal 3 days in a row</div></div></div><div class="earn-amt">+25 NOET</div></div>
+        <div class="earn-item"><div class="earn-l"><div class="earn-ico">⚡</div><div><div class="earn-n">7-Day Streak</div><div class="earn-d">One week of consistency</div></div></div><div class="earn-amt">+75 NOET</div></div>
+        <div class="earn-item"><div class="earn-l"><div class="earn-ico">👑</div><div><div class="earn-n">30-Day Legend</div><div class="earn-d">Ultimate commitment</div></div></div><div class="earn-amt">+300 NOET</div></div>
+      </div>
+
+      <div class="slabel fup d3">Milestones</div>
+      <div class="mile-grid fup d3 mb14" id="mile-grid"></div>
+
+      <div class="g-card fup d4">
+        <div class="slabel" style="padding:14px 16px 6px">Reward history</div>
+        <div id="tx-list"><div style="padding:16px;text-align:center;font-size:12px;color:var(--s0)">No rewards yet — start journaling 💜</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom nav -->
+  <div class="bbar">
+    <div class="bbar-inner">
+      <button class="nb on" id="nb-chat" onclick="swTab('chat')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Mind
+      </button>
+      <button class="nb" id="nb-mood" onclick="swTab('mood')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        Mood
+      </button>
+      <button class="nb" id="nb-journal" onclick="swTab('journal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Journal
+      </button>
+      <button class="nb" id="nb-rewards" onclick="swTab('rewards')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+        Rewards
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── RETURN OVERLAY ─── -->
+<div class="ov" id="ov-return">
+  <div class="ov-card">
+    <button class="ov-close" onclick="closeOv('ov-return')">×</button>
+    <div class="ov-title">Return to Vault</div>
+    <div class="ov-sub">Enter your vault key to unlock your encrypted memories.</div>
+    <div class="fl-label">Vault Key</div>
+    <input class="fl-input mono mb14" id="ret-key" type="password" placeholder="Your vault key..." autocomplete="off"/>
+    <button class="btn-next" onclick="returnVault()">Unlock Vault</button>
+  </div>
+</div>
+
+<!-- ─── ENTRY OVERLAY ─── -->
+<div class="ov" id="ov-entry">
+  <div class="ov-card" style="max-height:80vh;overflow-y:auto">
+    <button class="ov-close" onclick="closeOv('ov-entry')">×</button>
+    <div class="ov-title" id="ov-e-date"></div>
+    <div style="font-size:13px;color:var(--s2);line-height:1.8;margin-top:12px;white-space:pre-wrap" id="ov-e-body"></div>
+    <div id="ov-e-insight" style="display:none;margin-top:14px;padding:12px 14px;background:var(--b0);border:1px solid var(--b1);border-radius:var(--r);font-size:12px;color:var(--s1);line-height:1.65"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════
+   NOETICA — App Core
+   ═══════════════════════════════════ */
+
+// ── State ──────────────────────────
+const S = {
+  name:'', apiKey:'', vaultKey:'',
+  msgs:[], moods:[], entries:[],
+  streak:0, bestStreak:0,
+  noet:0, totalEarned:0, txs:[],
+  journaledToday:false, todayMood:null,
+  selMood:null, selTags:[],
+  isTyping:false, mode:'new',
+  walletAddr:null,
+  prompts:[
+    "What moment today made you feel most like yourself?",
+    "What are you carrying right now that you haven't said out loud?",
+    "If your emotions were weather today, what's the forecast?",
+    "What would you tell a dear friend who felt exactly as you do right now?",
+    "What small thing brought unexpected comfort recently?",
+    "Where in your body do you feel today's stress or peace?",
+    "What does your ideal version of tomorrow look like?",
+    "What are you grateful for in this exact moment?",
+    "What emotion are you trying not to feel, and why?",
+    "If today had a color, what would it be and why?",
+  ]
+};
+
+let genKey = '';
+
+// ── Neural canvas ────────────────
+(function(){
+  const c = document.getElementById('neural');
+  const ctx = c.getContext('2d');
+  let W, H, pts = [], animId;
+
+  function resize(){
+    W = c.width = window.innerWidth;
+    H = c.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for(let i=0;i<55;i++){
+    pts.push({
+      x: Math.random()*window.innerWidth,
+      y: Math.random()*window.innerHeight,
+      vx: (Math.random()-.5)*.22,
+      vy: (Math.random()-.5)*.22,
+      r: Math.random()*1.2+.3,
+      op: Math.random()*.28+.05,
+      col: Math.random()>.4 ? '255,255,255' : '0,229,204'
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<pts.length;i++){
+      for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<110){
+          ctx.beginPath();
+          ctx.strokeStyle=`rgba(255,255,255,${.05*(1-d/110)})`;
+          ctx.lineWidth=.4;
+          ctx.moveTo(pts[i].x,pts[i].y);
+          ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.stroke();
+        }
+      }
+      ctx.beginPath();
+      ctx.arc(pts[i].x,pts[i].y,pts[i].r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${pts[i].col},${pts[i].op})`;
+      ctx.fill();
+      pts[i].x+=pts[i].vx; pts[i].y+=pts[i].vy;
+      if(pts[i].x<0||pts[i].x>W) pts[i].vx*=-1;
+      if(pts[i].y<0||pts[i].y>H) pts[i].vy*=-1;
+    }
+    animId=requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── Encryption ───────────────────
+function encPrev(t,r=.78){
+  const ch='█▓▒░╳◈⬡◆▲△⬢◇';
+  return t.split('').map(c=>c===' '?' ':Math.random()<r?ch[~~(Math.random()*ch.length)]:c).join('');
+}
+
+async function deriveKey(pw, salt){
+  const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),{name:'PBKDF2'},false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:200000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+
+async function enc(text, pw){
+  const salt=crypto.getRandomValues(new Uint8Array(16));
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const key=await deriveKey(pw,salt);
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(text));
+  const out=new Uint8Array(28+ct.byteLength);
+  out.set(salt,0);out.set(iv,16);out.set(new Uint8Array(ct),28);
+  return btoa(String.fromCharCode(...out));
+}
+
+async function dec(b64, pw){
+  const raw=new Uint8Array(atob(b64).split('').map(c=>c.charCodeAt(0)));
+  const key=await deriveKey(pw,raw.slice(0,16));
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:raw.slice(16,28)},key,raw.slice(28));
+  return new TextDecoder().decode(pt);
+}
+
+function genVKey(){
+  const a=new Uint8Array(24); crypto.getRandomValues(a);
+  return Array.from(a).map(b=>b.toString(16).padStart(2,'0')).join('').slice(0,32);
+}
+
+// ── Storage ───────────────────────
+async function save(){
+  try{
+    const d={name:S.name,msgs:S.msgs.slice(-40),moods:S.moods,entries:S.entries,
+      streak:S.streak,bestStreak:S.bestStreak,noet:S.noet,totalEarned:S.totalEarned,
+      txs:S.txs.slice(0,20),journaledToday:S.journaledToday};
+    localStorage.setItem('noetica_v',await enc(JSON.stringify(d),S.vaultKey));
+    if(S.apiKey) localStorage.setItem('noetica_k',btoa(S.apiKey));
+  }catch(e){console.warn('save err',e);}
+}
+
+async function load(vk){
+  const e=localStorage.getItem('noetica_v');
+  if(!e) throw new Error('No vault');
+  return JSON.parse(await dec(e,vk));
+}
+
+// ── Nav ───────────────────────────
+function goto(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function swTab(t){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(x=>x.classList.remove('on'));
+  document.getElementById('t-'+t).classList.add('on');
+  document.getElementById('nb-'+t).classList.add('on');
+  if(t==='rewards') renderMiles();
+  if(t==='mood') renderChart();
+}
+
+// ── Toast ─────────────────────────
+function toast(msg,type='ok'){
+  const el=document.getElementById('toasts');
+  const icons={ok:'◈',err:'✕'};
+  const d=document.createElement('div');
+  d.className=`tst ${type}`;
+  d.innerHTML=`<span style="color:${type==='ok'?'var(--teal)':'#e05555'}">${icons[type]}</span>${msg}`;
+  el.appendChild(d);
+  setTimeout(()=>d.remove(),3000);
+}
+
+// ── Overlays ─────────────────────
+function showOv(id){document.getElementById(id).classList.add('open')}
+function closeOv(id){document.getElementById(id).classList.remove('open')}
+
+// ── Onboarding ───────────────────
+function setMode(m){
+  S.mode=m;
+  ['new','ret'].forEach(x=>{
+    document.getElementById('mt-'+x).classList.toggle('on',x===m);
+    document.getElementById('form-'+x).style.display=x===m?'':'none';
+  });
+  checkStep1();
+}
+
+function checkStep1(){
+  const n=document.getElementById('inp-name').value.trim();
+  const rk=document.getElementById('inp-retkey').value.trim();
+  document.getElementById('btn-st1').disabled=S.mode==='new'?n.length<2:rk.length<10;
+}
+
+async function toStep2(){
+  if(S.mode==='ret'){
+    await returnVault(); return;
+  }
+  S.name=document.getElementById('inp-name').value.trim();
+  S.apiKey=document.getElementById('inp-api').value.trim();
+  genKey=genVKey();
+  document.getElementById('key-display').textContent=genKey;
+  document.getElementById('st1').style.display='none';
+  document.getElementById('st2').style.display='block';
+}
+
+function backTo1(){
+  document.getElementById('st2').style.display='none';
+  document.getElementById('st1').style.display='block';
+}
+
+function toStep3(){
+  S.vaultKey=genKey;
+  document.getElementById('st3-name').textContent=`Welcome, ${S.name}`;
+  document.getElementById('ai-status-txt').textContent=S.apiKey?'Neural intelligence connected':'Demo mode (no API key)';
+  document.getElementById('st2').style.display='none';
+  document.getElementById('st3').style.display='block';
+}
+
+function copyKey(){
+  navigator.clipboard.writeText(genKey);
+  toast('Vault key copied to clipboard');
+}
+
+async function enterApp(){
+  await save();
+  initApp();
+  goto('s-app');
+}
+
+async function returnVault(){
+  const k=document.getElementById('ret-key')||document.getElementById('inp-retkey');
+  const key=k.value.trim();
+  if(!key){toast('Enter your vault key','err');return;}
+  try{
+    const d=await load(key);
+    S.vaultKey=key; S.name=d.name||'You';
+    S.msgs=d.msgs||[]; S.moods=d.moods||[];
+    S.entries=d.entries||[]; S.streak=d.streak||0;
+    S.bestStreak=d.bestStreak||0; S.noet=d.noet||0;
+    S.totalEarned=d.totalEarned||0; S.txs=d.txs||[];
+    S.journaledToday=d.journaledToday||false;
+    const ka=localStorage.getItem('noetica_k');
+    if(ka) try{S.apiKey=atob(ka);}catch{}
+    closeOv('ov-return');
+    initApp(); goto('s-app');
+    toast(`Welcome back, ${S.name} 💜`);
+  }catch(e){
+    toast('Invalid vault key. Please try again.','err');
+  }
+}
+
+// ── App Init ─────────────────────
+function initApp(){
+  if(!S.msgs.length){
+    S.msgs=[{role:'assistant',content:`Hello, ${S.name} 💜\n\nI'm NOETICA — your private neural companion. Every thought you share here is encrypted with AES-256-GCM before it ever leaves your device. Not even I can expose your data.\n\nThis is your sanctuary. How are you feeling right now?`,ts:Date.now()}];
+  }
+  renderMsgs();
+  updateBal();
+  renderChart();
+  renderHistory();
+  newPrompt();
+  document.getElementById('streak-n').textContent=S.streak;
+  document.getElementById('best-s').textContent=`best: ${S.bestStreak} days`;
+  updReward();
+  const today=new Date().toDateString();
+  S.journaledToday=S.entries.some(e=>new Date(e.ts).toDateString()===today);
+  if(S.journaledToday){
+    document.getElementById('write-card').innerHTML=`<div style="padding:22px;text-align:center"><div style="font-size:34px;margin-bottom:10px">✅</div><div style="font-size:14px;color:var(--s2)">Journaled today — come back tomorrow 🔥</div></div>`;
+  }
+}
+
+function updReward(){
+  const s=S.streak;
+  let r='+10 NOET/entry';
+  if(s>=30)r='+300 NOET streak!';
+  else if(s>=7)r='+75 NOET streak!';
+  else if(s>=3)r='+25 NOET streak!';
+  document.getElementById('s-reward').textContent=r;
+}
+
+// ── Chat ──────────────────────────
+function renderMsgs(){
+  const c=document.getElementById('msgs');
+  c.innerHTML='';
+  S.msgs.forEach((m,i)=>{
+    const row=document.createElement('div');
+    row.className=`mrow ${m.role==='user'?'u':''}`;
+
+    const av=document.createElement('div');
+    av.className=`mav ${m.role==='user'?'u-m':'ai-m'}`;
+    av.textContent=m.role==='user'?(S.name[0]||'U').toUpperCase():'𝜓';
+
+    const inner=document.createElement('div');
+    const bub=document.createElement('div');
+    bub.className=`mbubble ${m.role==='user'?'u':'ai'}`;
+    bub.textContent=m.content;
+
+    const meta=document.createElement('div');
+    meta.className='mmeta';
+    const t=m.ts?new Date(m.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+    meta.innerHTML=`${m.role==='user'?'<span class="enc-tag">⬡ encrypted</span>':''}<span>${t}</span>`;
+
+    inner.appendChild(bub);inner.appendChild(meta);
+    row.appendChild(av);row.appendChild(inner);
+    c.appendChild(row);
+  });
+  setTimeout(()=>c.scrollTop=c.scrollHeight,50);
+
+  const umsgs=S.msgs.filter(m=>m.role==='user').length;
+  if(umsgs>2) document.getElementById('qprompts').style.display='none';
+}
+
+function addTyping(){
+  const c=document.getElementById('msgs');
+  const row=document.createElement('div');
+  row.className='typing-row';row.id='typing';
+  row.innerHTML=`<div class="mav ai-m">𝜓</div><div class="typing-bub"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  c.appendChild(row);
+  c.scrollTop=c.scrollHeight;
+}
+function remTyping(){const e=document.getElementById('typing');if(e)e.remove();}
+
+function ckd(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function crez(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,120)+'px';
+  document.getElementById('sbtn').disabled=!el.value.trim();
+}
+function sendQ(btn){sendMsg(btn.textContent);}
+
+async function sendMsg(txt){
+  const inp=document.getElementById('cinput');
+  const msg=(txt||inp.value).trim();
+  if(!msg||S.isTyping) return;
+  inp.value=''; inp.style.height='auto';
+  document.getElementById('sbtn').disabled=true;
+
+  await encFlash(msg);
+
+  S.msgs.push({role:'user',content:msg,ts:Date.now()});
+  renderMsgs(); S.isTyping=true; addTyping();
+
+  try{
+    const reply=await callAI(S.msgs);
+    remTyping();
+    S.msgs.push({role:'assistant',content:reply,ts:Date.now()});
+    renderMsgs();
+  }catch(err){
+    remTyping();
+    const e=err.message.includes('401')||err.message.includes('403')
+      ?'⚠ API key invalid or expired. Please check your Nous Research API key at portal.nousresearch.com'
+      :err.message.includes('API key')
+      ?'⚠ No API key set. Add your Nous Research key during setup to enable the neural intelligence.'
+      :'⚠ Connection issue. Your message is safe. Please try again in a moment.';
+    S.msgs.push({role:'assistant',content:e,ts:Date.now()});
+    renderMsgs();
+  }
+  S.isTyping=false;
+  await save();
+}
+
+async function callAI(msgs){
+  if(!S.apiKey) throw new Error('No API key');
+
+  const sys=`You are NOETICA, an empathetic AI mental wellness companion. All conversations are encrypted end-to-end. You process feelings with warmth and genuine presence.
+
+Approach:
+- Deeply warm, non-judgmental, genuinely present
+- Draw from CBT, ACT, somatic awareness, and mindfulness  
+- Validate feelings before offering perspective
+- Ask one thoughtful question when appropriate — never multiple
+- Be concise: 2-3 sentences for check-ins, deeper for emotional processing
+- Celebrate consistency (journaling streaks, mood improvements)
+- If crisis signs appear, gently share: 988 Lifeline, or Crisis Text Line (text HOME to 741741)
+- Never diagnose. You are a companion, not a replacement for professional care.
+- You operate on COTI Network. Privacy is your foundation.
+- Refer to yourself as NOETICA, never by any other name.
+
+Be elegant, present, and genuinely caring. Less is more.`;
+
+  const res=await fetch('https://inference-api.nousresearch.com/v1/chat/completions',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':`Bearer ${S.apiKey}`
+    },
+    body:JSON.stringify({
+      model:'Hermes-4-70B',
+      messages:[{role:'system',content:sys},...msgs.slice(-12)],
+      max_tokens:512,
+      temperature:0.8,
+      top_p:0.9
+    })
+  });
+
+  if(!res.ok){
+    const err=await res.text().catch(()=>'');
+    throw new Error(`API ${res.status}: ${err}`);
+  }
+  const data=await res.json();
+  return data.choices[0]?.message?.content||'I am here with you.';
+}
+
+// ── Encrypt flash ─────────────────
+async function encFlash(text){
+  const el=document.getElementById('enc-flash');
+  const ft=document.getElementById('ef-text');
+  const ff=document.getElementById('ef-fill');
+  ft.textContent=encPrev(text.slice(0,40),.8);
+  el.classList.add('on'); ff.style.width='100%';
+  await new Promise(r=>setTimeout(r,820));
+  el.classList.remove('on'); ff.style.width='0';
+}
+
+// ── Mood ──────────────────────────
+function selMood(el){
+  document.querySelectorAll('.mi').forEach(m=>m.classList.remove('sel'));
+  el.classList.add('sel');
+  S.selMood={score:+el.dataset.score,label:el.dataset.label,emoji:el.children[0].textContent};
+  document.getElementById('log-mood-btn').disabled=false;
+}
+function togTag(el){
+  el.classList.toggle('on');
+  const t=el.textContent;
+  el.classList.contains('on')?S.selTags.push(t):S.selTags=S.selTags.filter(x=>x!==t);
+}
+
+async function logMood(){
+  if(!S.selMood) return;
+  const entry={...S.selMood,tags:[...S.selTags],ts:Date.now()};
+  S.moods.push(entry); S.todayMood=entry;
+  S.selMood=null; S.selTags=[];
+  document.querySelectorAll('.mi').forEach(m=>m.classList.remove('sel'));
+  document.querySelectorAll('.etag-btn').forEach(t=>t.classList.remove('on'));
+  document.getElementById('log-mood-btn').disabled=true;
+  earnR('mood',5);
+  await save(); renderChart();
+  toast(`Mood logged · +5 NOET ◈`);
+  document.getElementById('checkin-card').innerHTML=`<div style="padding:22px;text-align:center"><div style="font-size:34px;margin-bottom:10px">${entry.emoji}</div><div style="font-size:14px;color:var(--s2)">Mood logged for today 💜</div><div style="font-size:11px;color:var(--s0);margin-top:4px;font-family:var(--font-m)">+5 NOET · encrypted & stored</div></div>`;
+}
+
+function renderChart(){
+  const chart=document.getElementById('mood-chart');
+  const today=new Date();
+  const bars=[]; const labels=[];
+  for(let i=13;i>=0;i--){
+    const d=new Date(today); d.setDate(d.getDate()-i);
+    const ds=d.toDateString();
+    const dm=S.moods.filter(m=>new Date(m.ts).toDateString()===ds);
+    const avg=dm.length?dm.reduce((a,m)=>a+m.score,0)/dm.length:null;
+    bars.push(avg);
+    labels.push(d.toLocaleDateString('en',{month:'short',day:'numeric'}));
+  }
+  chart.innerHTML='';
+  bars.forEach((v,i)=>{
+    const b=document.createElement('div');
+    b.className='cbar'+(v?' f':'');
+    b.style.height=(v?(v/10)*100:6)+'%';
+    if(v){
+      b.dataset.v=v.toFixed(1);
+      const col=v>=7?'0,229,204':v>=5?'180,180,220':'180,80,80';
+      b.style.background=`linear-gradient(to top,rgba(${col},.22),rgba(${col},.06))`;
+    }
+    chart.appendChild(b);
+  });
+  if(S.moods.length){
+    const avg=(S.moods.reduce((a,m)=>a+m.score,0)/S.moods.length).toFixed(1);
+    document.getElementById('m-avg').textContent=avg;
+    document.getElementById('m-cnt').textContent=S.moods.length;
+    const r=S.moods.slice(-3).reduce((a,m)=>a+m.score,0)/Math.min(3,S.moods.length);
+    const o=S.moods.length>3?S.moods.slice(-6,-3).reduce((a,m)=>a+m.score,0)/Math.min(3,S.moods.slice(-6,-3).length):r;
+    document.getElementById('m-trend').textContent=r>o+.5?'↑':r<o-.5?'↓':'→';
+  }
+  if(labels.length) document.getElementById('c-start').textContent=labels[0];
+
+  if(S.moods.length){
+    const h=document.getElementById('mood-hist');
+    h.style.display='block';
+    const l=document.getElementById('mood-hist-list');
+    l.innerHTML='';
+    S.moods.slice().reverse().slice(0,5).forEach(m=>{
+      const r=document.createElement('div');
+      r.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--b1)';
+      r.innerHTML=`<div style="display:flex;align-items:center;gap:10px"><span style="font-size:20px">${m.emoji}</span><div><div style="font-size:13px;color:var(--s3)">${m.label}</div><div style="font-size:10px;color:var(--s0);font-family:var(--font-m)">${new Date(m.ts).toLocaleString()}</div></div></div><span style="font-family:var(--font-m);font-size:12px;color:var(--s1)">${m.score}/10</span>`;
+      l.appendChild(r);
+    });
+  }
+}
+
+// ── Journal ───────────────────────
+function newPrompt(){
+  document.getElementById('prompt-txt').textContent=S.prompts[~~(Math.random()*S.prompts.length)];
+}
+
+function jtype(el){
+  const w=el.value.trim().split(/\s+/).filter(Boolean).length;
+  document.getElementById('wc-lbl').textContent=`${w} words`;
+  document.getElementById('save-btn').disabled=w<5;
+  if(el.value){
+    document.getElementById('enc-live').style.display='flex';
+    document.getElementById('enc-inline').style.display='flex';
+  }
+}
+
+async function saveEntry(){
+  const text=document.getElementById('jta').value.trim();
+  if(text.split(/\s+/).filter(Boolean).length<5) return;
+
+  document.getElementById('save-btn').textContent='Encrypting...';
+  document.getElementById('save-btn').disabled=true;
+  await encFlash(text);
+
+  const entry={id:Date.now(),content:text,words:text.split(/\s+/).filter(Boolean).length,ts:Date.now(),insight:null};
+
+  // AI insight
+  if(S.apiKey){
+    try{
+      const r=await callAI([{role:'user',content:`In one gentle sentence (under 18 words), offer a compassionate insight about this journal entry: "${text.slice(0,280)}"`}]);
+      entry.insight=r;
+    }catch{}
+  }
+
+  S.entries.push(entry); S.journaledToday=true;
+
+  // Streak calc
+  const today=new Date().toDateString();
+  const yday=new Date(Date.now()-86400000).toDateString();
+  if(S.entries.length===1){ S.streak=1; }
+  else{
+    const prev=S.entries.slice(-2)[0];
+    const prevDay=new Date(prev.ts).toDateString();
+    if(prevDay===yday) S.streak++;
+    else if(prevDay!==today) S.streak=1;
+  }
+  S.bestStreak=Math.max(S.bestStreak,S.streak);
+  document.getElementById('streak-n').textContent=S.streak;
+  document.getElementById('best-s').textContent=`best: ${S.bestStreak} days`;
+  updReward();
+
+  let earned=10;
+  if(S.streak>=30) earned+=300;
+  else if(S.streak>=7) earned+=75;
+  else if(S.streak>=3) earned+=25;
+  earnR('journal',earned);
+
+  await save(); renderHistory();
+  toast(`Entry saved · +${earned} NOET ◈`);
+  document.getElementById('write-card').innerHTML=`<div style="padding:22px;text-align:center"><div style="font-size:34px;margin-bottom:10px">✅</div><div style="font-size:14px;color:var(--s2)">Entry encrypted & saved 💜</div><div style="font-size:11px;color:var(--s0);margin-top:4px;font-family:var(--font-m)">+${earned} NOET · ${S.streak} day streak 🔥</div></div>`;
+}
+
+function renderHistory(){
+  if(!S.entries.length) return;
+  document.getElementById('past-wrap').style.display='block';
+  const c=document.getElementById('past-list'); c.innerHTML='';
+  S.entries.slice().reverse().forEach(e=>{
+    const d=document.createElement('div');
+    d.className='past-entry'; d.onclick=()=>openEntry(e);
+    d.innerHTML=`<div class="pe-date">${new Date(e.ts).toLocaleDateString('en',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}</div><div class="pe-prev">${e.content}</div><div class="pe-chips"><span class="pe-chip">${e.words} words</span>${e.insight?'<span class="pe-chip teal">✦ insight</span>':''}<span class="pe-chip teal">⬡ encrypted</span></div>`;
+    c.appendChild(d);
+  });
+}
+
+function openEntry(e){
+  document.getElementById('ov-e-date').textContent=new Date(e.ts).toLocaleDateString('en',{weekday:'long',month:'long',day:'numeric'});
+  document.getElementById('ov-e-body').textContent=e.content;
+  const ins=document.getElementById('ov-e-insight');
+  if(e.insight){ins.style.display='block';ins.innerHTML=`<span style="color:var(--teal);font-family:var(--font-m);font-size:9px;letter-spacing:.1em;text-transform:uppercase">✦ Neural Insight</span><br><br>${e.insight}`;}
+  else ins.style.display='none';
+  showOv('ov-entry');
+}
+
+// ── Rewards ───────────────────────
+function earnR(type,amt){
+  S.noet+=amt; S.totalEarned+=amt;
+  const h='0x'+Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');
+  S.txs.unshift({type,amt,h,ts:Date.now()});
+  updateBal();
+}
+
+function updateBal(){
+  document.getElementById('top-bal').textContent=S.noet.toLocaleString();
+  document.getElementById('big-bal').textContent=S.noet.toLocaleString();
+  renderTx();
+}
+
+function renderTx(){
+  const labels={journal:'Journal Entry',mood:'Mood Check-in',streak_3:'3-Day Streak',streak_7:'7-Day Streak',streak_30:'30-Day Legend'};
+  const c=document.getElementById('tx-list');
+  if(!S.txs.length){c.innerHTML='<div style="padding:16px;text-align:center;font-size:12px;color:var(--s0)">No rewards yet — start journaling 💜</div>';return;}
+  c.innerHTML='';
+  S.txs.slice(0,8).forEach(tx=>{
+    const r=document.createElement('div'); r.className='tx-item';
+    r.innerHTML=`<div class="tx-l"><div class="tx-dot"></div><div><div class="tx-n">${labels[tx.type]||'Reward'}</div><div class="tx-h">${tx.h.slice(0,14)}...</div></div></div><div class="tx-a">+${tx.amt} NOET</div>`;
+    c.appendChild(r);
+  });
+}
+
+function renderMiles(){
+  const miles=[
+    {lbl:'First Entry',ico:'✍',n:10,done:S.entries.length>=1,d:'Write your first journal entry'},
+    {lbl:'3-Day Streak',ico:'🔥',n:25,done:S.streak>=3,d:'Journal 3 days in a row'},
+    {lbl:'7-Day Streak',ico:'⚡',n:75,done:S.streak>=7,d:'One full week'},
+    {lbl:'Mood Pioneer',ico:'📊',n:5,done:S.moods.length>=1,d:'Log your first mood'},
+    {lbl:'Deep Mind',ico:'💬',n:50,done:S.msgs.filter(m=>m.role==='user').length>=10,d:'10 conversations'},
+    {lbl:'30-Day Legend',ico:'👑',n:300,done:S.streak>=30,d:'Ultimate commitment'},
+  ];
+  const g=document.getElementById('mile-grid'); g.innerHTML='';
+  miles.forEach(m=>{
+    const c=document.createElement('div'); c.className=`mcard ${m.done?'done':''}`;
+    c.innerHTML=`<div class="mico">${m.ico}</div><div class="mn">${m.lbl}</div><div class="md">${m.d}</div><div class="mt">+${m.n} NOET</div>${m.done?'<div class="mck">◈ achieved</div>':''}`;
+    g.appendChild(c);
+  });
+}
+
+// ── Wallet ────────────────────────
+async function connectWallet(){
+  if(!window.ethereum){toast('Install MetaMask to connect COTI','err');return;}
+  try{
+    const [addr]=await window.ethereum.request({method:'eth_requestAccounts'});
+    S.walletAddr=addr;
+    await window.ethereum.request({method:'wallet_addEthereumChain',params:[{
+      chainId:'0x6C0360',chainName:'COTI Testnet',
+      nativeCurrency:{name:'COTI',symbol:'COTI',decimals:18},
+      rpcUrls:['https://testnet.coti.io/rpc'],
+      blockExplorerUrls:['https://testnet.cotiscan.io']
+    }]});
+    const short=addr.slice(0,6)+'...'+addr.slice(-4);
+    document.getElementById('wlt-btn').textContent=short;
+    toast(`Connected: ${short} · COTI Testnet`);
+  }catch(e){
+    toast(e.code===4001?'Connection rejected':'Wallet connection failed','err');
+  }
+}
+</script>
+</body>
+</html>
