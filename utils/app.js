@@ -1,5 +1,5 @@
 // NOETICA - Private Neural Companion
-// Mobile-first, professional chat UI
+// NO MODULES VERSION
 
 const App = {
   currentView: 'mind',
@@ -15,6 +15,7 @@ const App = {
     this.setupEventListeners();
     this.renderNavigation();
     this.renderMindView();
+    this.updateWalletDisplay();
   },
 
   loadUser() {
@@ -31,7 +32,6 @@ const App = {
   },
 
   setupEventListeners() {
-    // Handle online status
     window.addEventListener('online', () => this.updateConnectionStatus(true));
     window.addEventListener('offline', () => this.updateConnectionStatus(false));
   },
@@ -48,287 +48,130 @@ const App = {
     const nav = document.getElementById('nav');
     if (!nav) return;
     
-    const navItems = [
-      { id: 'mind', icon: '🧠', label: 'Mind' },
-      { id: 'mood', icon: '💚', label: 'Mood' },
-      { id: 'journal', icon: '📓', label: 'Journal' },
-      { id: 'rewards', icon: '🎁', label: 'Rewards' }
-    ];
-
-    nav.innerHTML = navItems.map(item => \`
-      <button class="nav-item \${this.currentView === item.id ? 'active' : ''}" onclick="App.switchView('\${item.id}')">
-        <span class="nav-icon">\${item.icon}</span>
-        <span class="nav-label">\${item.label}</span>
-      </button>
-    \`).join('');
+    const views = ['mind', 'mood', 'journal', 'rewards'];
+    const labels = ['Mind', 'Mood', 'Journal', 'Rewards'];
+    
+    nav.innerHTML = labels.map((label, i) => 
+      \`<button class="\${views[i] === this.currentView ? 'active' : ''}" onclick="App.switchView('\${views[i]}')">\${label}</button>\`
+    ).join('');
   },
 
   switchView(view) {
     this.currentView = view;
     this.renderNavigation();
-    
-    const content = document.getElementById('content');
-    if (!content) return;
+    if (view === 'mind') this.renderMindView();
+    else if (view === 'mood') this.renderMoodView();
+    else if (view === 'journal') this.renderJournalView();
+    else if (view === 'rewards') this.renderRewardsView();
+  },
 
-    switch(view) {
-      case 'mind':
-        this.renderMindView();
-        break;
-      case 'mood':
-        this.renderMoodView();
-        break;
-      case 'journal':
-        this.renderJournalView();
-        break;
-      case 'rewards':
-        this.renderRewardsView();
-        break;
+  updateWalletDisplay() {
+    const walletAddr = document.getElementById('wallet-address');
+    if (walletAddr && this.user && this.user.wallet) {
+      walletAddr.textContent = this.user.wallet.slice(0, 6) + '...' + this.user.wallet.slice(-4);
     }
+  },
+
+  async sendMessage(content) {
+    if (this.isLoading || !content.trim()) return;
+    
+    this.isLoading = true;
+    this.addMessage('user', content);
+    this.renderMindView();
+    
+    try {
+      const response = await AI.sendMessage(this.messages.map(m => ({ role: m.role, content: m.content })));
+      if (response.error) {
+        this.addMessage('assistant', 'Error: ' + response.error);
+      } else {
+        this.addMessage('assistant', response.content);
+      }
+    } catch (e) {
+      this.addMessage('assistant', 'Sorry, I encountered an error. Please try again.');
+    }
+    
+    this.isLoading = false;
+    this.renderMindView();
+  },
+
+  addMessage(role, content) {
+    this.messages.push({ role, content, timestamp: Date.now() });
   },
 
   renderMindView() {
-    const content = document.getElementById('content');
-    if (!content) return;
-
-    content.innerHTML = \`
-      <div class="chat-container">
-        <div class="chat-messages" id="chat-messages">
-          \${this.messages.length === 0 ? \`
-            <div class="welcome-message">
-              <div class="welcome-icon">🧠</div>
-              <h2>Welcome back, \${this.user?.name || 'Friend'}</h2>
-              <p>Your private sanctuary awaits. How are you feeling today?</p>
-            </div>
-          \` : this.messages.map(msg => this.renderMessage(msg)).join('')}
-        </div>
-        
-        <div class="chat-input-container">
-          <div class="quick-actions">
-            <button class="quick-btn" onclick="App.sendQuickMessage('I feel anxious today')">😰 I feel anxious</button>
-            <button class="quick-btn" onclick="App.sendQuickMessage('I need to process my thoughts')">💭 Process thoughts</button>
-          </div>
-          
-          <div class="input-wrapper">
-            <input type="text" id="chat-input" placeholder="Share what's on your mind..." onkeypress="if(event.key==='Enter')App.sendMessage()">
-            <button class="send-btn" onclick="App.sendMessage()">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    \`;
-
-    this.scrollToBottom();
-  },
-
-  renderMessage(msg) {
-    const isUser = msg.role === 'user';
-    return \`
-      <div class="message \${isUser ? 'user' : 'ai'}">
-        <div class="message-content">\${msg.content}</div>
-        <div class="message-time">\${msg.time}</div>
-      </div>
-    \`;
-  },
-
-  scrollToBottom() {
-    const container = document.getElementById('chat-messages');
-    if (container) {
-      setTimeout(() => {
-        container.scrollTop = container.scrollHeight;
-      }, 100);
-    }
-  },
-
-  async sendQuickMessage(text) {
-    const input = document.getElementById('chat-input');
-    if (input) {
-      input.value = text;
-      await this.sendMessage();
-    }
-  },
-
-  async sendMessage() {
-    const input = document.getElementById('chat-input');
-    if (!input || !input.value.trim() || this.isLoading) return;
-
-    const text = input.value.trim();
-    input.value = '';
-
-    const userMsg = {
-      role: 'user',
-      content: text,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
+    const main = document.getElementById('main-view');
+    if (!main) return;
     
-    this.messages.push(userMsg);
-    this.renderMindView();
-
-    // Re-render after adding message
-    this.$nextTick(() => {
-      const container = document.getElementById('chat-messages');
-      if (container) {
-        const userMsgEl = container.querySelector('.message.user:last-child');
-        if (userMsgEl) {
-          container.scrollTop = container.scrollHeight;
-        }
-      }
-    });
-
-    await this.getAIResponse(text);
+    const messagesHtml = this.messages.map(m => 
+      \`<div class="message \${m.role}"><div class="message-content">\${m.content}</div></div>\`
+    ).join('');
+    
+    const quickReplies = ['I feel anxious today', 'Help me process my thoughts', 'I need someone to talk to', 'What can you help me with?'];
+    const quickHtml = quickReplies.map(q => 
+      \`<button class="quick-reply" onclick="App.sendMessage('\${q}')">\${q}</button>\`
+    ).join('');
+    
+    main.innerHTML = \`
+      <div class="mind-container">
+        <div class="messages">\${messagesHtml || '<p class="welcome">How are you feeling today?</p>'}</div>
+        \${quickHtml}
+        <div class="input-area">
+          <input type="text" id="message-input" placeholder="Share what's on your mind..." onkeypress="if(event.key==='Enter')App.handleInput()">
+          <button onclick="App.handleInput()">Send</button>
+        </div>
+      </div>
+    \`;
   },
 
-  async getAIResponse(userText) {
-    this.isLoading = true;
-    this.updateLoading(true);
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: this.messages.map(m => ({ role: m.role, content: m.content }))
-        })
-      });
-
-      const data = await response.json();
-      
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      const aiMsg = {
-        role: 'ai',
-        content: data.content,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      
-      this.messages.push(aiMsg);
-    } catch (error) {
-      const errorMsg = {
-        role: 'ai',
-        content: 'I apologize, but I\\'m having trouble connecting. Please try again.',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      this.messages.push(errorMsg);
-    } finally {
-      this.isLoading = false;
-      this.updateLoading(false);
-      this.renderMindView();
-    }
-  },
-
-  updateLoading(loading) {
-    const btn = document.querySelector('.send-btn');
-    if (btn) {
-      btn.disabled = loading;
-      btn.innerHTML = loading 
-        ? '<div class="loading-spinner"></div>' 
-        : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>';
+  handleInput() {
+    const input = document.getElementById('message-input');
+    if (input && input.value.trim()) {
+      this.sendMessage(input.value.trim());
+      input.value = '';
     }
   },
 
   renderMoodView() {
-    const content = document.getElementById('content');
-    if (!content) return;
-
-    content.innerHTML = \`
-      <div class="mood-container">
-        <h2>💚 Mood Tracker</h2>
-        <div class="mood-score">
-          <div class="score-circle" style="--score: \${this.moodScore}">
-            <span class="score-value">\${this.moodScore}%</span>
-            <span class="score-label">Wellness</span>
-          </div>
-        </div>
-        <div class="mood-history">
-          <h3>This Week</h3>
-          <div class="mood-chart">
-            \${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => \`
-              <div class="chart-bar" style="height: \${50 + Math.random() * 50}%">
-                <span class="bar-label">\${day}</span>
-              </div>
-            \`).join('')}
-          </div>
-        </div>
-        <div class="streak-badge">
-          🔥 \${this.streak} Day Streak!
-        </div>
-      </div>
-    \`;
+    const main = document.getElementById('main-view');
+    if (!main) return;
+    main.innerHTML = '<div class="mood-tracker"><h2>How are you feeling?</h2><p>Track your emotional wellness journey</p></div>';
   },
 
   renderJournalView() {
-    const content = document.getElementById('content');
-    if (!content) return;
-
-    content.innerHTML = \`
-      <div class="journal-container">
-        <h2>📓 Journal</h2>
-        <div class="journal-entries">
-          \${this.messages.slice(0, 10).map((msg, i) => msg.role === 'user' ? \`
-            <div class="journal-entry">
-              <div class="entry-date">\${msg.time}</div>
-              <div class="entry-preview">\${msg.content.substring(0, 100)}...</div>
-            </div>
-          \` : '').join('') || '<p class="empty-state">Start a conversation to create journal entries</p>'}
-        </div>
-      </div>
-    \`;
+    const main = document.getElementById('main-view');
+    if (!main) return;
+    main.innerHTML = '<div class="journal"><h2>Private Journal</h2><p>Your thoughts, encrypted forever</p></div>';
   },
 
   renderRewardsView() {
-    const content = document.getElementById('content');
-    if (!content) return;
+    const main = document.getElementById('main-view');
+    if (!main) return;
+    main.innerHTML = '<div class="rewards"><h2>NOETICA Rewards</h2><p>Earn tokens for engaging with your mental wellness</p></div>';
+  }
+};
 
-    content.innerHTML = \`
-      <div class="rewards-container">
-        <h2>🎁 Rewards</h2>
-        <div class="token-balance">
-          <span class="token-icon">Ψ</span>
-          <span class="token-amount">\${this.tokens.toLocaleString()}</span>
-          <span class="token-label">NOETICA Tokens</span>
-        </div>
-        <div class="rewards-list">
-          <div class="reward-item">
-            <span class="reward-icon">📱</span>
-            <div class="reward-info">
-              <h4>Daily Check-in</h4>
-              <p>+10 Ψ</p>
-            </div>
-            <button class="claim-btn" onclick="App.claimReward('checkin')">Claim</button>
-          </div>
-          <div class="reward-item">
-            <span class="reward-icon">🧠</span>
-            <div class="reward-info">
-              <h4>Mindful Session</h4>
-              <p>+25 Ψ</p>
-            </div>
-            <button class="claim-btn" onclick="App.claimReward('mindful')">Claim</button>
-          </div>
-          <div class="reward-item">
-            <span class="reward-icon">📓</span>
-            <div class="reward-info">
-              <h4>Journal Entry</h4>
-              <p>+15 Ψ</p>
-            </div>
-            <button class="claim-btn" onclick="App.claimReward('journal')">Claim</button>
-          </div>
-        </div>
-      </div>
-    \`;
-  },
-
-  claimReward(type) {
-    const rewards = { checkin: 10, mindful: 25, journal: 15 };
-    this.tokens += rewards[type] || 0;
-    this.renderRewardsView();
-  },
-
-  $nextTick(fn) {
-    setTimeout(fn, 0);
+// AI Module
+const AI = {
+  async sendMessage(messages) {
+    const key = localStorage.getItem('noetica_apikey');
+    if (!key) {
+      return { content: '', error: 'No API key. Please add your Hermes API key.' };
+    }
+    
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages, apiKey: key })
+      });
+      const data = await response.json();
+      if (!response.ok || data.error) {
+        return { content: '', error: data.error || 'Request failed' };
+      }
+      return { content: data.content };
+    } catch (e) {
+      return { content: '', error: 'Network error. Please try again.' };
+    }
   }
 };
 
